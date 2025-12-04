@@ -12,8 +12,10 @@ library(ggplot2)
 #' 
 #' @return NULL
 save_placement <- function(fleet_size, placement) {
-  data_frame <- data.frame(station = names(placement),
-                           bikes = as.numeric(placement))
+  # creates data frame
+  data_frame <- as.data.frame(t(as.numeric(placement)))
+  colnames(data_frame) <- names(placement)
+  
   # construct file name
   file_name <- paste0("results/fleet_size_", fleet_size, "_placement.csv")
   

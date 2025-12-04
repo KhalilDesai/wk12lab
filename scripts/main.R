@@ -12,7 +12,7 @@ source("scripts/analysis.R")
 # constants for use across program
 SEED <- 2025
 FLEET_SIZES <- c(22, 44, 66, 88)
-RUN_OPTIMIZATION <- TRUE
+RUN_OPTIMIZATION <- FALSE
 
 ## 1) DATA PREP
 
@@ -37,14 +37,18 @@ lambda_max <- find_lambda_max(complete_arrival_rates)
 ## 3) SIMULATION + OPTIMIZATION
 
 # finds optimal placements for 4 different fleet sizes
-optimal_placement_1 <- get_optimal_placement(FLEET_SIZES[1], complete_arrival_rates,
-                                           lambda_max, seed = SEED, num_iters = 20)
-optimal_placement_2 <- get_optimal_placement(FLEET_SIZES[2], complete_arrival_rates,
-                                             lambda_max, seed = SEED, num_iters = 40)
-optimal_placement_3 <- get_optimal_placement(FLEET_SIZES[3], complete_arrival_rates,
-                                             lambda_max, seed = SEED, num_iters = 60)
-optimal_placement_4 <- get_optimal_placement(FLEET_SIZES[4], complete_arrival_rates,
-                                             lambda_max, seed = SEED, num_iters = 80)
+# only runs if we want it to!
+if (RUN_OPTIMIZATION) {
+  optimal_placement_1 <- get_optimal_placement(FLEET_SIZES[1], complete_arrival_rates,
+                                             lambda_max, seed = SEED, num_iters = 20)
+  optimal_placement_2 <- get_optimal_placement(FLEET_SIZES[2], complete_arrival_rates,
+                                               lambda_max, seed = SEED, num_iters = 40)
+  optimal_placement_3 <- get_optimal_placement(FLEET_SIZES[3], complete_arrival_rates,
+                                               lambda_max, seed = SEED, num_iters = 60)
+  optimal_placement_4 <- get_optimal_placement(FLEET_SIZES[4], complete_arrival_rates,
+                                               lambda_max, seed = SEED, num_iters = 80)
+}
+
 ## 4) VISUALIZATION AND ANALYSIS
 
 # save placements
@@ -53,6 +57,6 @@ save_placement(FLEET_SIZES[2], optimal_placement_2$optimized_placement)
 save_placement(FLEET_SIZES[3], optimal_placement_3$optimized_placement)
 save_placement(FLEET_SIZES[4], optimal_placement_4$optimized_placement)
 
-# net demand over time
-# before vs after bike allocation
-# satisfaction_rate vs fleet_size given optimal allocation
+# plot fleet_size vs satisfaction rate of our determined optimal placement
+
+# before vs after bike allocation for fleet size of 88
