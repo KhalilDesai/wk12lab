@@ -84,7 +84,6 @@ get_optimal_placement <- function(fleet_size, complete_arrival_rates, lambda_max
               rate_history = satisfaction_rate_history))
 }
 
-
 #' Evaluates a given placement on a simulated day of rides
 #' 
 #' @description evaluates a given placement on a simulated day. returns the 

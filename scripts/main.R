@@ -7,10 +7,12 @@ source("scripts/utils.R")
 source("scripts/estimation.R")
 source("scripts/simulation.R")
 source("scripts/placement.R")
+source("scripts/analysis.R")
 
 # constants for use across program
 SEED <- 2025
 FLEET_SIZES <- c(22, 44, 66, 88)
+RUN_OPTIMIZATION <- TRUE
 
 ## 1) DATA PREP
 
@@ -45,8 +47,12 @@ optimal_placement_4 <- get_optimal_placement(FLEET_SIZES[4], complete_arrival_ra
                                              lambda_max, seed = SEED, num_iters = 80)
 ## 4) VISUALIZATION AND ANALYSIS
 
+# save placements
+save_placement(FLEET_SIZES[1], optimal_placement_1$optimized_placement)
+save_placement(FLEET_SIZES[2], optimal_placement_2$optimized_placement)
+save_placement(FLEET_SIZES[3], optimal_placement_3$optimized_placement)
+save_placement(FLEET_SIZES[4], optimal_placement_4$optimized_placement)
 
-# placements for 5 fleet sizes (22, 44, 66, 88, 110)
 # net demand over time
 # before vs after bike allocation
 # satisfaction_rate vs fleet_size given optimal allocation
