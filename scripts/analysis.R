@@ -23,3 +23,36 @@ save_placement <- function(fleet_size, placement) {
   
   return()
 }
+
+#' Creates plot of fleet_size vs satisfaction rate
+#'
+#' @description saves a plot of fleet_size vs satisfaction rate in the results
+#' folder
+#' 
+#' @param fleet_sizes a numeric vector - fleet sizes
+#' @param satisfaction_rates a numeric vector - corresponding satisfaction rates
+#' 
+#' @return NULL
+plot_fleet_size_graph <- function(fleet_sizes, satisfaction_rates) {
+  # combine data into one data frame
+  data_frame <- data.frame(fleet_size = fleet_sizes,
+                           satisfaction_rate = satisfaction_rates)
+  
+  # create the plot using ggplot
+  plot <- ggplot(data_frame, aes(x = fleet_size, y = satisfaction_rate)) +
+    geom_line(color = "steelblue", linewidth = 1) +
+    geom_point(color = "darkred", size = 3) +
+    scale_x_continuous(breaks = fleet_sizes) +
+    ylim(0, 1) +
+    labs(
+      title = "Fleet Size vs Satisfaction Rate",
+      x = "Fleet Size",
+      y = "Satisfaction Rate") +
+    theme_minimal()
+  
+  # save the plot
+  file_name <- "results/fleet_size_vs_satisfaction.png"
+  ggsave(filename = file_name, plot = plot)
+  
+  return()
+}

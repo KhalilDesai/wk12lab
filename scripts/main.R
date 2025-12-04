@@ -58,5 +58,10 @@ save_placement(FLEET_SIZES[3], optimal_placement_3$optimized_placement)
 save_placement(FLEET_SIZES[4], optimal_placement_4$optimized_placement)
 
 # plot fleet_size vs satisfaction rate of our determined optimal placement
+satisfaction_rates <- c(optimal_placement_1$satisfaction_rate,
+                        optimal_placement_2$satisfaction_rate,
+                        optimal_placement_3$satisfaction_rate,
+                        optimal_placement_4$satisfaction_rate)
+plot_fleet_size_graph(FLEET_SIZES, satisfaction_rates)
 
 # before vs after bike allocation for fleet size of 88
