@@ -9,7 +9,7 @@ source("scripts/simulation.R")
 source("scripts/placement.R")
 
 # constants for use across program
-SEED <- 2025
+SEED <- 10
 FLEET_SIZES <- c(22, 44, 66, 88, 110)
 
 ## 1) DATA PREP
@@ -34,8 +34,9 @@ lambda_max <- find_lambda_max(complete_arrival_rates)
 
 ## 3) SIMULATION + OPTIMIZATION
 
-optimal_placement <- get_optimal_placement(22, complete_arrival_rates, lambda_max, seed = SEED, num_iters = 40)
-print
+optimal_placement <- get_optimal_placement(22, complete_arrival_rates,
+                                           lambda_max, seed = SEED, num_iters = 25)
+
 
 # simulates a single day
 #simulated_day <- simulate_one_day(complete_arrival_rates, lambda_max, SEED)

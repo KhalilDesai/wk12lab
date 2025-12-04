@@ -2,8 +2,25 @@ library(tidyverse)
 
 #' Rudimentarily optimizes initial placement for satisfaction rate
 #'
-get_optimal_placement <- function(fleet_size, complete_arrival_rates, lambda_max, seed = NULL, num_iters = 20) {
-  
+#' @description given a fleet_size and the outputs of our data processing, 
+#' rudimentarily optimizes the initial placement for satisfaction rate. first
+#' simulates a day of rides, then sets an initial, uniform placement. that 
+#' placement is evaluated on the simulated day, and a bike is moved to the station
+#' with the most failed requests from the station with the least failed requests
+#' and available bikes. this loop is executed num_iters times.
+#' 
+#' @param fleet_size single-element numeric vector - the fleet size. must be a
+#' multiple of the number of unique stations
+#' @param complete_arrival_rates data frame/tibble - the complete arrival rates
+#' estimated and cleaned from our raw data
+#' @param lambda_max data frame/tibble - the tibble with lambda_max info
+#' @param seed single-element numeric vector - optional random seed for reproducibility
+#' @param num_iters single-element numeric vector - number of iterations of 
+#' optimization loop
+#' 
+#' @return
+get_optimal_placement <- function(fleet_size, complete_arrival_rates, lambda_max,
+                                  seed = NULL, num_iters = 20) {
   # get all unique stations
   unique_stations <- unique(c(complete_arrival_rates$start_station,
                               complete_arrival_rates$end_station))
@@ -52,14 +69,25 @@ get_optimal_placement <- function(fleet_size, complete_arrival_rates, lambda_max
     placement[best_station] <- placement[best_station] - 1
   }
   
-  print(result$final_placement)
+  print(placement)
   return(result$satisfaction_rate)
 }
 
 
-# TODO: FUNCTION DOCUMENTATION
-# basically evaluates proportion of satisfied requests given an initial placement
-# placement is a named vector
+#' Evaluates a given placement on a simulated day of rides
+#' 
+#' @description evaluates a given placement on a simulated day. returns the 
+#' satisfaction rate, the final arrangement of bikes, and a vector with the 
+#' stations that failed requests due to lack of bikes.
+#' 
+#' @param placement a named numeric vector - names are stations and values are
+#' number of bikes
+#' @param simulated_day data frame/tibble - full simulated day of ridership
+#' 
+#' @return a named list with the following components:
+#' - satisfaction_rate : the proportion of satisfied requests
+#' - final_arrangement : the final arrangement of bikes after the day of rides
+#' - failed_requests : a vector that records the stations that failed requests
 evaluate_placement <- function(placement, simulated_day) {
   # sort simulated day by time
   sorted_day <- simulated_day %>%
@@ -80,13 +108,14 @@ evaluate_placement <- function(placement, simulated_day) {
       placement[request$start_station] <- placement[request$start_station] - 1
       placement[request$end_station] <- placement[request$end_station] + 1
     } else {
+      # otherwise, mark it as a failed request
       failed_requests <- c(failed_requests, request$start_station)
     }
     
   }
   
-  # return evaluation info
+  # return evaluation info as named list
   return(list(satisfaction_rate = satisfied / nrow(simulated_day),
-              final_placement = placement,
+              final_arrangement = placement,
               failed_requests = failed_requests))
 }
