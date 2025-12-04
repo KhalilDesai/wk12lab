@@ -9,8 +9,8 @@ source("scripts/simulation.R")
 source("scripts/placement.R")
 
 # constants for use across program
-SEED <- 10
-FLEET_SIZES <- c(22, 44, 66, 88, 110)
+SEED <- 2025
+FLEET_SIZES <- c(22, 44, 66, 88)
 
 ## 1) DATA PREP
 
@@ -34,23 +34,17 @@ lambda_max <- find_lambda_max(complete_arrival_rates)
 
 ## 3) SIMULATION + OPTIMIZATION
 
-optimal_placement <- get_optimal_placement(22, complete_arrival_rates,
-                                           lambda_max, seed = SEED, num_iters = 25)
-
-
-# simulates a single day
-#simulated_day <- simulate_one_day(complete_arrival_rates, lambda_max, SEED)
-
-# placement IDFKKKKKKK
-#placement <- setNames(rep(1, 23), 2:24)
-
-# evaluate a bike placement
-#result <- evaluate_placement(placement, simulated_day)
-#print(result$satisfaction_rate)
-# print(result$final_placement)
-
-
+# finds optimal placements for 4 different fleet sizes
+optimal_placement_1 <- get_optimal_placement(FLEET_SIZES[1], complete_arrival_rates,
+                                           lambda_max, seed = SEED, num_iters = 20)
+optimal_placement_2 <- get_optimal_placement(FLEET_SIZES[2], complete_arrival_rates,
+                                             lambda_max, seed = SEED, num_iters = 40)
+optimal_placement_3 <- get_optimal_placement(FLEET_SIZES[3], complete_arrival_rates,
+                                             lambda_max, seed = SEED, num_iters = 60)
+optimal_placement_4 <- get_optimal_placement(FLEET_SIZES[4], complete_arrival_rates,
+                                             lambda_max, seed = SEED, num_iters = 80)
 ## 4) VISUALIZATION AND ANALYSIS
+
 
 # placements for 5 fleet sizes (22, 44, 66, 88, 110)
 # net demand over time

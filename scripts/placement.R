@@ -18,7 +18,13 @@ library(tidyverse)
 #' @param num_iters single-element numeric vector - number of iterations of 
 #' optimization loop
 #' 
-#' @return
+#' @return a named list with the following components:
+#' - satisfaction_rate : the proportion of satisfied requests for our optimized placement
+#' - optimized_placement : our optimized initial placement of bikes
+#' - final_arrangement : the final arrangement of bikes after the day of rides
+#'  for our optimized placement
+#' - rate_history : satisfaction rates recorded over the iterations of the 
+#' optimization loop
 get_optimal_placement <- function(fleet_size, complete_arrival_rates, lambda_max,
                                   seed = NULL, num_iters = 20) {
   # get all unique stations
@@ -38,6 +44,9 @@ get_optimal_placement <- function(fleet_size, complete_arrival_rates, lambda_max
   # simulate day of ride requests
   simulated_day <- simulate_one_day(complete_arrival_rates, lambda_max, seed)
   
+  # initialize vector for satisfaction_rate history
+  satisfaction_rate_history <- c()
+  
   # rudimentarily optimize placement for simulated requests
   # essentially, move one bike from least strained station with bikes to 
   # station with most failed requests
@@ -45,8 +54,8 @@ get_optimal_placement <- function(fleet_size, complete_arrival_rates, lambda_max
     # evaluate our current placement
     result <- evaluate_placement(placement, simulated_day)
     
-    # TODO: FIX THIS print (for debugging)
-    print(result$satisfaction_rate)
+    # add satisfaction_rate to satisfaction_rate_history
+    satisfaction_rate_history <- c(satisfaction_rate_history, result$satisfaction_rate)
     
     # if we achieve a perfect placement (unlikely), break
     if (length(result$failed_requests) == 0) break
@@ -69,8 +78,10 @@ get_optimal_placement <- function(fleet_size, complete_arrival_rates, lambda_max
     placement[best_station] <- placement[best_station] - 1
   }
   
-  print(placement)
-  return(result$satisfaction_rate)
+  return(list(satisfaction_rate = result$satisfaction_rate,
+              optimized_placement = placement,
+              final_arrangement = result$final_arrangement,
+              rate_history = satisfaction_rate_history))
 }
 
 
