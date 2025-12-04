@@ -3,7 +3,8 @@ library(tidyverse)
 #' Estimate arrival rates
 #'
 #' @description uses an unbiased estimator to estimate the arrival rate
-#' of every start_station, end_station, hour trio in the data 
+#' of every start_station, end_station, hour trio in the data. taken from 
+#' EdStem
 #' 
 #' @param data data frame/tibble - contains bike ridership data
 #' 
@@ -55,8 +56,8 @@ estimate_arrival_rates <- function(data) {
     group_by(station, hour, date) %>%
     summarize(time_avail = 
                 sum(difftime(time, lag(time), units="hours")*(count > 0), 
-                    na.rm = TRUE)) %>%
-    summarize(avg_avail = mean(time_avail)) %>%
+                    na.rm = TRUE), .groups = "drop_last") %>%
+    summarize(avg_avail = mean(time_avail), .groups = "drop_last") %>%
     mutate(avg_avail = round(as.numeric(avg_avail), digits = 4)) %>%
     ungroup()
   
@@ -66,20 +67,4 @@ estimate_arrival_rates <- function(data) {
     mutate(mu_hat = ifelse(avg_avail > 0, avg_trips / avg_avail, NA))
   
   return(mu_hat)
-}
-
-#' Finds the max hourly arrival rate between stations
-#'
-#' @description for every start, end station pair in the data, determines the 
-#' maximum estimated hourly arrival rate
-#' 
-#' @param arrival_rates data frame/tibble - contains estimated arrival rates
-#' 
-#' @return a tibble with the max hourly estimated arrival rate for every 
-#' start, end station pair present in the data
-find_lambda_max <- function(arrival_rates) {
-  lambda_maxes <- arrival_rates %>%
-    group_by(start_station, end_station) %>%
-    summarize(lambda_max = max(mu_hat))
-  return(lambda_maxes)
 }
