@@ -10,9 +10,15 @@ library(tidyverse)
 #' estimated arrival rates
 #' @param lambda_max data frame/tibble - stores maximum hourly arrival rate
 #' for each route present in the data
+#' @param seed single-element numeric vector - optional random seed
 #' 
 #' @return a tibble with all attempted rides (start, end, and time in hours)
-simulate_one_day <- function(complete_arrival_rates, lambda_max) {
+simulate_one_day <- function(complete_arrival_rates, lambda_max, seed = NULL) {
+  # set seed if supplied
+  if (!is.null(seed)) {
+    set.seed(seed)
+  }
+  
   # create a data frame with all distinct routes
   all_routes <- complete_arrival_rates %>%
     distinct(start_station, end_station)
@@ -39,7 +45,7 @@ simulate_one_day <- function(complete_arrival_rates, lambda_max) {
       arrange(hour) %>%
       pull(mu_hat)
     
-    # simulate this one-route for the day and add to our output log
+    # simulate this one route for the day and add to our output log
     output_list[[route_num]] <- simulate_route_one_day(route,
                                                        hourly_arrival_rates,
                                                        lambda_max_route)
@@ -61,7 +67,7 @@ simulate_one_day <- function(complete_arrival_rates, lambda_max) {
 #' @param lambda_max single-element numeric vector - max hourly arrival rate
 #'  for this route
 #'  
-#'  @return a tibble with one day of simulated bike rides for this route
+#' @return a tibble with one day of simulated bike rides for this route
 simulate_route_one_day <- function(route, hourly_arrival_rates, lambda_max) {
   # initialize an empty output tibble
   output <- tibble(
@@ -88,8 +94,7 @@ simulate_route_one_day <- function(route, hourly_arrival_rates, lambda_max) {
     if (time < 24 && rbinom(1, size = 1, p = (lambda_i / lambda_max)) == 1) {
       output <- output %>%
         add_row(start_station = route["start_station"],
-                end_station = route["end_station"],
-                time = time)
+                end_station = route["end_station"], time = time)
     }
   }
   
