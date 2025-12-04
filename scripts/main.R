@@ -65,3 +65,5 @@ satisfaction_rates <- c(optimal_placement_1$satisfaction_rate,
 plot_fleet_size_graph(FLEET_SIZES, satisfaction_rates)
 
 # before vs after bike allocation for fleet size of 88
+before_vs_after_plot(optimal_placement_4$optimized_placement,
+                     optimal_placement_4$final_arrangement)
