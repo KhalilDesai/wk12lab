@@ -28,7 +28,11 @@ expect_equal(nrow(complete_arrival_rates) %% 24, 0)
 simulation <- simulate_one_day(complete_arrival_rates, lambda_max)
 expect_equal(simulation$time, sort(simulation$time))
 
-# get_optimal_placement + evaluate_placement unit tests
+# all start and end stations should be the same since there is only one route in data
+expect_true(all(simulation$start_station == 2))
+expect_true(all(simulation$end_station == 4))
+
+# get_optimal_placement unit tests
 optimal_placement <- get_optimal_placement(4, complete_arrival_rates, lambda_max, num_iters = 5)
 expect_equal(sum(optimal_placement$optimized_placement), 4)
 expect_equal(sum(optimal_placement$final_arrangement), 4)

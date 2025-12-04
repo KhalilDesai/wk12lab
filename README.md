@@ -15,4 +15,7 @@ the top to adjust your results. The main file loads functions from all of the in
 then executes a complete estimation, simulation, and optimization pipeline. Comments
 and documentation within the project provide more details. 
 
+In `tests`, `testthat.R` contains unit tests for the main functions in my logical
+sequence. To run the tests, simply source that file. 
+
 I hope you have a great day!
